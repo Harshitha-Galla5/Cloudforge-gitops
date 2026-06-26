@@ -1,5 +1,6 @@
 apiVersion: apps/v1
 kind: Deployment
+
 metadata:
   name: freshmart
   namespace: cloudforge
@@ -31,19 +32,27 @@ spec:
         - name: freshmart
 
           image: harshitha30galla/freshmart:v1
-
           imagePullPolicy: Always
+
+          command:
+            - node
+
+          args:
+            - dist/index.cjs
 
           ports:
             - containerPort: 5000
 
           envFrom:
             - secretRef:
-               name: cloudforge-db-secret
-  
+                name: cloudforge-db-secret
+
           env:
             - name: NODE_ENV
               value: "production"
+
+            - name: PORT
+              value: "5000"
 
           resources:
             requests:
@@ -54,3 +63,18 @@ spec:
               cpu: "500m"
               memory: "512Mi"
 
+          readinessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 2
+            failureThreshold: 6
+
+          livenessProbe:
+            tcpSocket:
+              port: 5000
+            initialDelaySeconds: 60
+            periodSeconds: 20
+            timeoutSeconds: 2
+            failureThreshold: 5
