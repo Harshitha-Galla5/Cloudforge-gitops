@@ -31,7 +31,7 @@ spec:
       containers:
         - name: freshmart
 
-          image: harshitha30galla/freshmart:v1
+          image: harshitha30galla/freshmart:39702bc
           imagePullPolicy: Always
 
           command:
