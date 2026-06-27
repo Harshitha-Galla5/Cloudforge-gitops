@@ -1,0 +1,43 @@
+apiVersion: eksctl.io/v1alpha5
+kind: ClusterConfig
+
+metadata:
+  name: cloudforge-cluster
+  region: ap-south-1
+  version: "1.33"
+
+vpc:
+  id: vpc-08e78d4c347f4b954
+
+  subnets:
+    public:
+      ap-south-1a:
+        id: subnet-0697c5c7ae1dee30c
+      ap-south-1b:
+        id: subnet-0547c81a9146b5ead
+      ap-south-1c:
+        id: subnet-02f6bfdc29c669fd0
+
+managedNodeGroups:
+  - name: cloudforge-workers
+
+    instanceType: t3.small
+
+    desiredCapacity: 2
+    minSize: 2
+    maxSize: 2
+
+    volumeSize: 20
+
+    privateNetworking: false
+
+    amiFamily: AmazonLinux2023
+
+    labels:
+      role: worker
+
+    iam:
+      withAddonPolicies:
+        autoScaler: true
+        cloudWatch: true
+        ebs: true
